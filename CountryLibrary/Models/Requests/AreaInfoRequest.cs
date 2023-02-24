@@ -5,10 +5,10 @@
         public AreaInfoRequest(string region, string timeZones)
         {
             Region = region;
-            TimeZones = timeZones;
+            Timezone = timeZones;
         }
         public string Region { get; set; }
 
-        public string TimeZones { get; set; }
+        public string Timezone { get; set; }
     }
 }

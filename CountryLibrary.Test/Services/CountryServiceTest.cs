@@ -11,31 +11,68 @@ namespace CountryLibrary.Test.Services
 {
     public class CountryServiceTest
     {
-        [Fact]
-        public async Task GetCountryByNameTest()
+        [Theory]
+        [InlineData("Cambodia")]
+        [InlineData("Japan")]
+        [InlineData("China")]
+        public async Task GetCountryByName_OnSuccess(string countryName)
         {
             //arrange
             var countryService = new CountryService();
             //act
-            var countryName = "Cambodia";
             var country = await countryService.GetCountryByName(countryName);
 
             //assert
-            Assert.Equal(countryName, country?.Name);
+            Assert.NotNull(country);
+            Assert.Equal(countryName, country!.Name);
         }
 
-        [Fact]
-        public async Task GetCountryByAreaTest()
+        [Theory]
+        [InlineData("KKK")]
+        [InlineData("LLLL")]
+        [InlineData("")]
+        public async Task GetCountryByName_IncorrectName(string countryName)
+        {
+            //arrange
+            var countryService = new CountryService();
+            //act
+            var country = await countryService.GetCountryByName(countryName);
+
+            //assert
+            Assert.Null(country);
+        }
+
+        [Theory]
+        [InlineData("ASEAN", "UTC+07:00")]
+        [InlineData("EU", "UTC+07:00")]
+        public async Task GetCountryByAreaOnSuccess(string region, string timezone)
         {
             //arrange
             var countryService = new CountryService();
 
             //act
-            var areaInfo = new AreaInfoRequest("Asia", "UTC+07:00");
-            var countries =await countryService.GetCountryByArea(areaInfo);
+            var areaInfo = new AreaInfoRequest(region,timezone);
+            var countries = await countryService.GetCountryByArea(areaInfo);
 
             //assert
-            Assert.All(countries!, c => c.TimeZones.Contains(areaInfo.TimeZones));
+            countries.Should().NotBeNull();
+            Assert.All(countries!, c => c.TimeZones.Contains(areaInfo.Timezone));
+        }
+
+        [Theory]
+        [InlineData("asia","7")]
+        [InlineData("a", "UTC+07:00")]
+        public async Task GetCountryByAreaOnIncorrectArea(string area, string timezone)
+        {
+            //arrange
+            var countryService = new CountryService();
+
+            //act
+            var areaInfo = new AreaInfoRequest(area, timezone);
+            var countries = await countryService.GetCountryByArea(areaInfo);
+
+            //assert
+            countries.Should().BeNull();
         }
     }
 }

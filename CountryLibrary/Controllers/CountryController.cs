@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CountryLibrary.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class CountryController : Controller
     {
@@ -16,14 +16,14 @@ namespace CountryLibrary.Controllers
             _countryService = countryService;
         }
 
-        [HttpPost("[action]")]
+        [HttpPost()]
         public IActionResult GetCountryByName(string name)
         {
             var country = _countryService.GetCountryByName(name);
             return Ok(country);
         }
 
-        [HttpPost("[action]")]
+        [HttpPost()]
         public IActionResult GetCountryByArea([FromBody] AreaInfoRequest areaInfo) 
         {
             var countries = _countryService.GetCountryByArea(areaInfo);
